@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+
+	<!-- netctoss_v1.0项目 配置  -->
+	<servlet>
+		<servlet-name>findCost</servlet-name>
+		<servlet-class>web.MainServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>findCost</servlet-name>
+		<url-pattern>*.do</url-pattern>
+	</servlet-mapping>
+
+	<!--
+		配置错误页面：
+		 1.tomcat是所有服务端代码调用的入口，调用代码时会尝试捕获异常
+	  	 2.默认的它捕获异常时会自动转发到对应的错误页面(自带,自动完成)，如404.html/500.html
+	  		这种方式是编程式异常处理 如jdbc try catch finally
+	  	 3.开发者可以通过配置信息改变这个默认行为，明确告诉tomcat哪个异常去哪个异常页面，
+	  		这件事本身解决不了异常，仅仅是让用户看起来更友好而已。这种方式是容器式处理异常。
+	  	 4.声明错误页面时，需写绝对路径，但由于转发方式，只能访问项目内部的资源，所以tomcat会自动的加上项目名，
+			开发者不必谢项目名称，写上反而出错。
+	  -->
+	  <!-- 1.通过异常类型进行配置  -->
+	<error-page>
+		<exception-type>java.lang.Exception</exception-type>
+		<location>/WEB-INF/error.jsp</location>
+	</error-page>
+
+	<!-- 2.通过异常编号(404/405/500)进行配置 -->
+	<!--
+	<error-page>
+		<error-code>404</error-code>
+		<location>/WEB-INF/error.jsp</location>
+	</error-page>
+	-->
+
+	<!-- Session超时配置 默认空闲时间30分钟 单位30分钟 -->
+	<session-config>
+		<session-timeout>10</session-timeout>
+	</session-config>
+
+	<!-- 配置：分页每页显示的条目数量 -->
+	<context-param>
+		<param-name>pageSize</param-name>
+		<param-value>6</param-value>
+	</context-param>
+
+	<!-- 配置过滤器，拦截未登录的用户 -->
+	<filter>
+		<filter-name>login</filter-name>
+		<filter-class>web.LoginFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>login</filter-name>
+		<!-- 这是过滤所有请求，跟登录相关的请求不过滤，在Filter总排除。 -->
+		<url-pattern>*.do</url-pattern>
+	</filter-mapping>
+</web-app>
